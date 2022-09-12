@@ -44,7 +44,7 @@ func main() {
 class: center, middle
 
 Code
-https://github.com/algogrit/presentation-websockets-training
+https://github.com/AgarwalConsulting/websockets-training
 
 Slides
-https://websockets-training.slides.algogrit.com
+https://websockets-training.slides.agarwalconsulting.io
