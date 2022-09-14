@@ -19,3 +19,14 @@ make
 ```bash
 echo '<h1>Hello Drogon!</h1>' >> index.html
 ```
+
+---
+
+## New controller
+
+```bash
+cd controllers
+drogon_ctl create controller [-s] HelloCtrl
+```
+
+`-h` for a HTTP controller & `-w` for a WebSocket controller.
