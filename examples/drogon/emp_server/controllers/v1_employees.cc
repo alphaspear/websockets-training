@@ -12,6 +12,8 @@ void employees::index(const HttpRequestPtr &req,
     //Read the database or cache to get user information
     Json::Value ret;
 
+    // TODO: Create a vector of employees & return it as JSON.
+
     ret["result"]="ok";
     ret["user_name"]="Jack";
 
