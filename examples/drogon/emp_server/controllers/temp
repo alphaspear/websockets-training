@@ -55,59 +55,36 @@ void employees::getInfo(const HttpRequestPtr &req,
     //    }   
     //}
     ret=ds.show_action(userId);
-    auto resp=HttpResponse::newHttpJsonResponse(ret);
+    auto resp=HttpResponse::newHttpJsonResponse();
     std::cout<<ret;
     callback(resp); 
 }
 
-void employees::addInfo(const HttpRequestPtr& req,
+void employees::addInfo(const HttpRequestPtr &req,
                       std::function<void (const HttpResponsePtr &)> &&callback)
 {
-    auto json=req->getJsonObject();
-    //std::cout<<json;
-    //auto jsonPtr = req.getBody();
-    //auto json = *jsonPtr;
+
     Json::Value ret;
-    //auto json = HttpResponse::getBody();
-    std::string name = (*json)["name"].asString();
-    std::string department = (*json)["department"].asString();
-    std::string projectID = (*json)["projectID"].asString();
+    //Json::Value sss;
+
+    auto json = HttpResponse::getJsonObject();
+    std::string name,department;
+    int projectID;
+    if(json)
+    {
+        name = (*json)["name"].asString();
+        department = (*json)["department"].asString();
+        projectID = (*json)["projectID"]
+    }
+
     ret=ds.create_action(name,department,projectID);
     auto resp=HttpResponse::newHttpJsonResponse(ret);
-    //std::cout<<ret;
+    std::cout<<ret;
     callback(resp); 
-}
-
-void employees::deleteInfo(const HttpRequestPtr &req,
-                      std::function<void (const HttpResponsePtr &)> &&callback, int userId)
-{
-    Json::Value ret;
-    ret=ds.delete_action(userId);
-    auto resp=HttpResponse::newHttpJsonResponse(ret);
+    //sss = HttpResponse::body();
+    //std::cout<<"\n----------------------------------------------------\n"<<sss<<"\n----------------------------------------------------\n";
+    //ret=ds.create_action("abhishik","SDE",567);
+    //auto resp=HttpResponse::newHttpJsonResponse(ret);
     //std::cout<<ret;
-    callback(resp); 
+    //callback(resp); 
 }
-
-// void update_full_info(const HttpRequestPtr &req, 
-//                       std::function<void (const HttpResponsePtr &)> &&callback, int userId)
-// {
-
-//     //auto jsonPtr = req.getJsonObject();
-//     //auto json = *jsonPtr;
-//     //Json::Value ret;
-//     ////auto json = HttpRequest::getBody();
-//     //std::string name = (*json)["name"].asString();
-//     //std::string department = (*json)["department"].asString();
-//     //int projectID = (*json)["projectID"];
-//     //ret=ds.update_full_info_action(userId,name,department,projectID);
-//     //auto resp=HttpResponse::newHttpJsonResponse(ret);
-//     //std::cout<<ret;
-//     //callback(resp); 
-// }
-
-
-// void update_some_info(const HttpRequestPtr &req, 
-//                       std::function<void (const HttpResponsePtr &)> &&callback, int userId)
-// {
-    
-// }
