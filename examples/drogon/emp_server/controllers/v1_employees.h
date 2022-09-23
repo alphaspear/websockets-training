@@ -36,7 +36,6 @@ class dataStorage
         temp["department"]=(*i).department;
         temp["projectID"]=(*i).projectid;
         final.append(temp);
-        //std::cout<<"temp\n"<<temp<<"\n_________________________\n"<<"final\n"<<final;
       }
       
       return final;
@@ -51,9 +50,11 @@ class dataStorage
             final["id"]=(*i).id;
             final["name"]=(*i).name;
             final["department"]=(*i).department;
-            final["projectID"]=(*i).projectid;    
-        }   
+            final["projectID"]=(*i).projectid;
+            return final;      
+        }
       }
+      final["error"]="User not found";   
       return final;
     }
     Json::Value create_action(std::string Name, std::string Department, std::string ProjectID)
@@ -70,6 +71,12 @@ class dataStorage
 
   Json::Value update_full_info_action(int ID, std::string Name, std::string Department, std::string ProjectID)
   {
+    Json::Value ret;
+    if(Name.empty() || Department.empty() || ProjectID.empty())
+    {
+        ret["error"]="Bad Request - Your request is missing parameters. Please verify and resubmit.";
+        return ret;
+    }
     for (auto i =vector_of_users.begin(); i != vector_of_users.end(); ++i)
       {
         if((*i).id == ID)
@@ -77,6 +84,26 @@ class dataStorage
           (*i).name=Name;
           (*i).department=Department;
           (*i).projectid=ProjectID;
+          break;
+        }
+      }
+      return show_action(ID);
+  }
+
+  Json::Value update_some_info_action(int ID, std::string Name, std::string Department, std::string ProjectID)
+  {
+    Json::Value ret;
+    for (auto i =vector_of_users.begin(); i != vector_of_users.end(); ++i)
+      {
+        if((*i).id == ID)
+        {
+          if(!Name.empty())
+            (*i).name=Name;
+          if(!Department.empty())
+            (*i).department=Department;
+          if(!ProjectID.empty())
+            (*i).projectid=ProjectID;
+          break;
         }
       }
       return show_action(ID);
@@ -89,10 +116,14 @@ class dataStorage
       for(int i=0; i < vector_of_users.size(); i++)
       {
         if(vector_of_users[i].id== ID)
-        position = i;
-        break;
+        {
+          position = i;
+          vector_of_users.erase(vector_of_users.begin()+position);
+          final["Status"]="User deleted";
+          return final;
+        }
       }
-      vector_of_users.erase(vector_of_users.begin()+position);
+      final["error"]="User not found";
       return final;
     }
 };
@@ -103,8 +134,8 @@ class employees : public drogon::HttpController<employees>
       METHOD_ADD(employees::index, "/", Get);
       METHOD_ADD(employees::getInfo, "/{id}", Get);
       METHOD_ADD(employees::addInfo, "/", Post);
-      //METHOD_ADD(employees::update_full_info, "/{id}",Put);
-      //METHOD_ADD(employees::update_some_info,"/{id}",Patch);
+      METHOD_ADD(employees::update_full_info, "/{id}",Put);
+      METHOD_ADD(employees::update_some_info,"/{id}",Patch);
       METHOD_ADD(employees::deleteInfo, "/{id}", Delete);
 
     // use METHOD_ADD to add your custom processing function here;
@@ -122,15 +153,10 @@ class employees : public drogon::HttpController<employees>
                       std::function<void (const HttpResponsePtr &)> &&callback);
     void deleteInfo(const HttpRequestPtr &req, 
                       std::function<void (const HttpResponsePtr &)> &&callback, int userId);
-    //void update_full_info(const HttpRequestPtr &req, 
-    //                  std::function<void (const HttpResponsePtr &)> &&callback, int userId);
-    //void update_some_info(const HttpRequestPtr &req, 
-    //                  std::function<void (const HttpResponsePtr &)> &&callback, int userId);
-    //void addInfo(const HttpRequestPtr& req,
-    //                  std::function<void (const HttpResponsePtr &)> &&callback);
-    
-    // void get(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback, int p1, std::string p2);
-    // void your_method_name(const HttpRequestPtr& req, std::function<void (const HttpResponsePtr &)> &&callback, double p1, int p2) const;
+    void update_full_info(const HttpRequestPtr &req, 
+                      std::function<void (const HttpResponsePtr &)> &&callback, int userId);
+    void update_some_info(const HttpRequestPtr &req, 
+                      std::function<void (const HttpResponsePtr &)> &&callback, int userId);
 
 };
 }
