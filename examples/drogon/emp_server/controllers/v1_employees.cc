@@ -38,12 +38,15 @@ void employees::addInfo(const HttpRequestPtr& req,
     if(name.empty() || department.empty() || projectID.empty())
     {
         ret["error"]="Bad Request - Your request is missing parameters. Please verify and resubmit.";
+        ret["HTTP_response_status_code"]="400";
     }
     else
     {
         ret=ds.create_action(name,department,projectID);
     }
     auto resp=HttpResponse::newHttpJsonResponse(ret);
+    if(ret["HTTP_response_status_code"]=="400")
+        resp->setStatusCode(HttpStatusCode::k400BadRequest);
     callback(resp); 
 }
 
@@ -53,6 +56,8 @@ void employees::deleteInfo(const HttpRequestPtr &req,
     Json::Value ret;
     ret=ds.delete_action(userId);
     auto resp=HttpResponse::newHttpJsonResponse(ret);
+    if(ret["HTTP_response_status_code"]=="400")
+        resp->setStatusCode(HttpStatusCode::k400BadRequest);
     //std::cout<<ret;
     callback(resp); 
 }
@@ -68,7 +73,8 @@ void employees::update_full_info(const HttpRequestPtr &req,
     std::string projectID = (*json)["projectID"].asString();
     ret=ds.update_full_info_action(userId,name,department,projectID);
     auto resp=HttpResponse::newHttpJsonResponse(ret);
-    //resp->setStatusCode(HttpStatusCode::k502BadGateway);
+    if(ret["HTTP_response_status_code"]=="400")
+        resp->setStatusCode(HttpStatusCode::k400BadRequest);
     callback(resp); 
 }
 
@@ -83,6 +89,7 @@ void employees::update_some_info(const HttpRequestPtr &req,
     std::string projectID = (*json)["projectID"].asString();
     ret=ds.update_some_info_action(userId,name,department,projectID);
     auto resp=HttpResponse::newHttpJsonResponse(ret);
-    //resp->setStatusCode(HttpStatusCode::k502BadGateway);
+    if(ret["HTTP_response_status_code"]=="400")
+        resp->setStatusCode(HttpStatusCode::k400BadRequest);
     callback(resp); 
 }

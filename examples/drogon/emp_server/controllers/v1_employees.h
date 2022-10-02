@@ -54,6 +54,7 @@ class dataStorage
             return final;      
         }
       }
+      final["HTTP_response_status_code"]="400";
       final["error"]="User not found";   
       return final;
     }
@@ -75,6 +76,7 @@ class dataStorage
     if(Name.empty() || Department.empty() || ProjectID.empty())
     {
         ret["error"]="Bad Request - Your request is missing parameters. Please verify and resubmit.";
+        ret["HTTP_response_status_code"]="400";
         return ret;
     }
     for (auto i =vector_of_users.begin(); i != vector_of_users.end(); ++i)
@@ -103,10 +105,12 @@ class dataStorage
             (*i).department=Department;
           if(!ProjectID.empty())
             (*i).projectid=ProjectID;
-          break;
+          return show_action(ID);
         }
       }
-      return show_action(ID);
+      ret["error"]="Bad Request - User not found";
+      ret["HTTP_response_status_code"]="400";
+      return ret;
   }
 
   Json::Value delete_action(int ID)
@@ -123,6 +127,7 @@ class dataStorage
           return final;
         }
       }
+      final["HTTP_response_status_code"]="400";
       final["error"]="User not found";
       return final;
     }

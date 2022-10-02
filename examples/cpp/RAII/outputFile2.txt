@@ -1,0 +1,2 @@
+Writing in a safe txt file.
+Writing again in a safe txt file.
