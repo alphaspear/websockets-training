@@ -1,19 +1,20 @@
 #include<iostream>
 #include<stdio.h>
 #include <cstring>
-class Test
+class Move_constructor_demo_class
 {
     public:
-        Test() = default;
-        Test(const char* string)
+        Move_constructor_demo_class() = default;
+        Move_constructor_demo_class(const char* string)
         {
             std::cout<<"CREATED\n";
             m_Size = strlen(string);
             m_Data = new char[m_Size];
+            std::cout<<"ADDRESS OF STRING: "<<&m_Data<<std::endl;
             memcpy(m_Data, string, m_Size);
         }
 
-        Test(const Test& other)
+        Move_constructor_demo_class(const Move_constructor_demo_class& other)
         {
             std::cout<<"COPIED\n";
             m_Size = other.m_Size;
@@ -21,19 +22,19 @@ class Test
             memcpy(m_Data, other.m_Data, m_Size);
         }
 
-        Test(Test&& other) noexcept
+        Move_constructor_demo_class(Move_constructor_demo_class&& other) noexcept
         {
             std::cout<<"MOVED\n";
             m_Size = other.m_Size;
             m_Data = other.m_Data;
-            
+            std::cout<<"ADDRESS OF STRING AFTER MOVING: "<<&m_Data<<std::endl;
             other.m_Size=0;
             other.m_Data=nullptr;
         }
 
-        ~Test()
+        ~Move_constructor_demo_class()
         {
-            std::cout<<"DESTROYED "<<m_Size<<"\n";
+            std::cout<<"DESTROYED "<<&m_Data<<"\n";
             delete m_Data;
         }
 
@@ -53,36 +54,27 @@ class Test
 
 };
 
-class Entity
+class Run
 {
     public:
-        Entity(const Test& name)
+        Move_constructor_demo_class m_Name;        
+        Run(const Move_constructor_demo_class& name)
             : m_Name(name)
-        {
-        }
+        {}
 
-        Entity(Test&& name)
-            //m_Name(name)//this is used to call copy contructor
-            //: m_Name((Test&&)name)//use this syntax and below syntax to call 
-            // the move constructor
-            : m_Name(std::move(name))//works both ways
-        {
-        }
+        Run(Move_constructor_demo_class&& name)
+            : m_Name(std::move(name))
+        {}
 
         void PrintName()
         {
             m_Name.Print();
         }
-    private:
-        Test m_Name;
+
 };
 
 int main()
 {
-    Entity entity(Test("Abhilash"));
-    entity.PrintName();
-    std::cin.get();
-    // Test* t1 = new Test("Abhilash");
-    // t1->Print()
-    // std::cin.get();
+    Run Run(Move_constructor_demo_class("Hello"));
+    Run.PrintName();
 }

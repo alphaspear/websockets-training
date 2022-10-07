@@ -1,5 +1,3 @@
-// This program shows off the basics of RAII with locks
-
 #include <mutex>
 #include <thread>
 #include <iostream>

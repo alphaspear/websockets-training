@@ -1,40 +1,36 @@
 #include<iostream>
 #include<stdio.h>
 #include <cstring>
-class Test
+class Copy_constructor_demo_class
 {
     public:
-        Test() = default;
-        Test(const char* s_variable)
+        Copy_constructor_demo_class() = default;
+        Copy_constructor_demo_class(const char* s_variable)
         {
             std::cout<<"CREATED\n";
             m_Size = strlen(s_variable);
             m_Data = new char[m_Size];
+            std::cout<<"ADDRESS OF STRING AT INIT: "<<&m_Data<<std::endl;
             memcpy(m_Data, s_variable, m_Size);
         }
 
-        Test(const Test& other)
+        Copy_constructor_demo_class(const Copy_constructor_demo_class& other)
         {
             std::cout<<"COPIED\n";
             m_Size = other.m_Size;
             m_Data = new char[m_Size];
             memcpy(m_Data, other.m_Data, m_Size);
+            std::cout<<"ADDRESS OF COPIED STRING: "<<&m_Data<<std::endl;
         }
 
-
-        ~Test()
+        ~Copy_constructor_demo_class()
         {
             delete m_Data;
         }
 
         void Print()
         {
-            for (uint32_t i = 0; i < m_Size; i++)
-            {
-                printf("%c", m_Data[i]);
-            }
-            printf("\n");
-            
+            std::cout<<m_Data<<std::endl;            
         }
 
     private:
@@ -43,23 +39,23 @@ class Test
 
 };
 
+
 class Entity
 {
     public:
-        Entity(const Test& name)
+        Entity(const Copy_constructor_demo_class& name)
             : m_Name(name)
-        {
-        }
+        {}
         void PrintName()
         {
             m_Name.Print();
         }
     private:
-        Test m_Name;
+        Copy_constructor_demo_class m_Name;
 };
 
 int main()
 {
-    Entity entity(Test("Abhilash"));
+    Entity entity(Copy_constructor_demo_class("Hello"));
     entity.PrintName();
 }
