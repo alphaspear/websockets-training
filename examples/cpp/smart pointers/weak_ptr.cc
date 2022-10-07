@@ -33,7 +33,7 @@ int main(int argc, char const *argv[])
             std::weak_ptr<Something> somethingWeak = s1;
             std::cout<<"Object created"<< std::endl;
             somethingWeak.sayHi();
-            std:cout<<somethingWeak.data;
+            std::cout<<somethingWeak.data;
 
         } 
         std::cout<<"I am in outter scope"<< std::endl;
